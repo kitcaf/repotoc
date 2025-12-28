@@ -1,5 +1,12 @@
 {
     "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "src/*"
+            ]
+        },
+        "noEmit": true, /*让 tsc 只做类型检查，不输出文件 由打包工具tsup处理 */
         "target": "ESNext", /* 编译成最新的 JS 语法 */
         "module": "NodeNext", /* 使用 Node 原生模块规范 */
         "moduleResolution": "NodeNext",
@@ -10,6 +17,7 @@
         "skipLibCheck": true
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "src/test"
     ]
 }
