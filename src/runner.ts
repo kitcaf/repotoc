@@ -6,23 +6,16 @@ import { enrichTree } from './parser.js';
 import { sortTree, renderToMarkdown } from './generator.js';
 import { updateReadme } from './injector.js';
 
-/**
- * TOC 生成的核心流水线
- * 纯业务逻辑，不涉及 CLI 参数解析
- */
 export async function runCli(options: TocOptions) {
     const { rootDir } = options;
-    console.log("根目录", rootDir)
     const paths = await scanDocs({ cwd: rootDir });
-    
     if (!paths.length) {
         throw new Error('No Markdown files found in the target directory.');
     }
 
     let tree = buildTreeFromPaths(paths);
 
-    tree = await enrichTree(tree);
-
+    tree = await enrichTree(tree, rootDir);
     tree = sortTree(tree);
 
     const markdown = renderToMarkdown(tree);

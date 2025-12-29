@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import matter from 'gray-matter';
 import { DocNode } from './type/docNode.js';
+import path from 'node:path';
 
 /**
  * H1 提取器 (State Machine Pattern)
@@ -72,12 +73,12 @@ async function parseFileMeta(filePath: string) {
 /**
  * 树的增强 (Enrichment) 遍历树节点，并行读取文件，回填meta信息
  */
-export async function enrichTree(nodes: DocNode[]): Promise<DocNode[]> {
+export async function enrichTree(nodes: DocNode[], rootDir: string): Promise<DocNode[]> {
     // 使用 Promise.all 实现并发 I/O
     const tasks = nodes.map(async (node) => {
         if (node.type === 'file') {
             // 1. 读取并解析
-            const { title, order } = await parseFileMeta(node.path);
+            const { title, order } = await parseFileMeta(path.join(rootDir, node.path));
 
             // 2. 回填显示名称
             node.displayName = cleanupName(node.name, title);
@@ -98,7 +99,7 @@ export async function enrichTree(nodes: DocNode[]): Promise<DocNode[]> {
             node.displayName = cleanupName(node.name);
             // 递归处理子节点
             if (node.children) {
-                await enrichTree(node.children);
+                await enrichTree(node.children, rootDir);
             }
         }
 

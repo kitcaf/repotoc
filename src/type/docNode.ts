@@ -7,7 +7,9 @@ export interface DocNode {
      */
     name: string
     /**
-     * 物理路径
+     * 物理路径 
+     * 始终存储相对于 rootDir 的【相对路径】
+     * 且强制使用 POSIX 风格（/ 分隔符）
      */
     path: string
 

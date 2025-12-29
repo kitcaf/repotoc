@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx --watch",
+    "dev": "tsx src/commands/toc.ts --watch",
     "build": "tsup",
     "test": "vitest",
     "lint": "eslint"
