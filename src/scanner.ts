@@ -3,8 +3,7 @@
  */
 
 import glob from 'fast-glob';
-import path from 'node:path'
-import { DEFAULT_IGNORE } from '@/constants.js';
+import { DEFAULT_IGNORE } from './constants.js';
 
 /**
  * 扫描配置接口

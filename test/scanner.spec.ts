@@ -1,7 +1,6 @@
 // test/scanner.test.ts
 import { describe, it, expect } from 'vitest';
 import { scanDocs } from '../src/scanner.js';
-import path from 'node:path';
 
 describe('Scanner', () => {
     it('扫描特定文件目录下的 md 文件', async () => {

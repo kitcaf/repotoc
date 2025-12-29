@@ -7,7 +7,8 @@
     "dev": "tsx src/index.ts",
     "build": "tsup src/index.ts --format esm --out-dir dist --clean",
     "test": "vitest",
-    "dev_test": "npx tsc --noEmit false --outDir ./dist --target ES5"
+    "dev_test": "npx tsc --noEmit false --outDir ./dist --target ES5",
+    "lint": "eslint"
   },
   "type": "module",
   "keywords": [],
@@ -15,12 +16,16 @@
   "license": "ISC",
   "packageManager": "pnpm@10.25.0",
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@types/node": "^25.0.3",
+    "eslint": "^9.39.2",
+    "globals": "^16.5.0",
+    "jiti": "^2.6.1",
     "rimraf": "^6.1.2",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vite-tsconfig-paths": "^6.0.3",
+    "typescript-eslint": "^8.50.1",
     "vitest": "^4.0.16"
   },
   "dependencies": {

@@ -1,6 +1,5 @@
 // src/core/injector.ts
 import fs from 'fs/promises';
-import path from 'node:path';
 import { END_TAG, START_TAG } from './constants.js';
 
 
@@ -14,7 +13,7 @@ export async function updateReadme(readmePath: string, tocContent: string): Prom
     try {
         content = await fs.readFile(readmePath, 'utf-8');
     } catch (error) {
-        console.error("file does not exist")
+        console.error("file does not exist:", error)
     }
 
     const startIndex = content.indexOf(START_TAG);

@@ -1,5 +1,5 @@
-import { DocNode } from '@/type/docNode.js';
-import { naturalSorter } from '@/utils.js';
+import { DocNode } from './type/docNode.js';
+import { naturalSorter } from './utils.js';
 
 /**
     * 递归排序树（排序同层的节点）
@@ -9,7 +9,7 @@ import { naturalSorter } from '@/utils.js';
     * 3. 优先级最低：显示名称(DisplayName) 的自然排序
 */
 export function sortTree(nodes: DocNode[]): DocNode[] {
-    // 1. 先对当前层级进行排序
+    // 1. 先对当前层级进行排序【【【
     nodes.sort((a, b) => {
         // 规则 A: 比较 Order (如果都有 order)
         const orderA = a.meta?.order ?? Number.MAX_SAFE_INTEGER;
