@@ -10,6 +10,9 @@
     "dev_test": "npx tsc --noEmit false --outDir ./dist --target ES5",
     "lint": "eslint"
   },
+  "bin": {
+    "toc": "./src/commands/toc.js"
+  },
   "type": "module",
   "keywords": [],
   "author": "",

@@ -11,7 +11,9 @@ export const DEFAULT_IGNORE = [
 ];
 
 /**
- * 定义锚点常量
+ * 定义目录标记常量
+ * TAG_MARK: 用户手动在md文件中输入的开始标记
+ * TAG_CLOSE: 系统自动生成的结束标记（用户无需手动输入）
  */
-export const START_TAG = '';
-export const END_TAG = '';
+export const TAG_MARK = '<!--toc-->';
+export const TAG_CLOSE = '<!--tocEnd-->';
