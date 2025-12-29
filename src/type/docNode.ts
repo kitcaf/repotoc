@@ -3,7 +3,7 @@
  */
 export interface DocNode {
     /**
-     * 文件名
+     * 文件名-源文件名
      */
     name: string
     /**
@@ -20,6 +20,11 @@ export interface DocNode {
      * dir中存在children
      */
     children?: DocNode[];
+
+    /**
+     * 实际展示（UI渲染/生成目录）展示的名字
+     */
+    displayName?: string
 
     /**
      * 元数据
