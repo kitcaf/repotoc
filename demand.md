@@ -131,3 +131,5 @@ Markdown
 生成器：将树结构渲染成 Markdown 文本。
 
 注入器：找到 README.md 里的 `` 标记并更新。
+
+<!-- toc -->
