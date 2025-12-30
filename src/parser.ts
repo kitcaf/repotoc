@@ -73,7 +73,7 @@ async function parseFileMeta(filePath: string) {
 /**
  * 树的增强 (Enrichment) 遍历树节点，并行读取文件，回填meta信息
  */
-export async function enrichTree(nodes: DocNode[], rootDir: string): Promise<DocNode[]> {
+export async function enrichTree(nodes: DocNode[], rootDir: string = ""): Promise<DocNode[]> {
     // 使用 Promise.all 实现并发 I/O
     const tasks = nodes.map(async (node) => {
         if (node.type === 'file') {
