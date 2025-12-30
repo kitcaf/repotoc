@@ -48,6 +48,7 @@ export function romanToNumber(roman: string): number | null {
  * 校验字符串是否符合严格的罗马数字结构
  * 规则：Thousands(M) + Hundreds(C/D) + Tens(X/L) + Units(I/V)
  */
+ 
 function isValidRomanStructure(roman: string): boolean {
     // 严格罗马数字正则
     // M* : 千位 (0-N个M)
@@ -110,8 +111,9 @@ export function extractRomanNumber(name: string): SortKey {
         }
     }
 
-    if (!isValidRomanStructure(name)) {
-        return null
+    // 验证罗马数字结构是否合法
+    if (!isValidRomanStructure(romanPart)) {
+        return null;
     }
 
     // 尝试转换罗马数字
