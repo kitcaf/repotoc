@@ -1,3 +1,7 @@
+import { extractArabicNumber } from "./arabicToNumber.js";
+import { extractChineseNumber } from "./chineseToNumber.js";
+import { extractRomanNumber } from "./romanToNumber.js";
+
 /**
  * 排序键类型
  * - number[]: 多级编号，如 [1, 2, 3] 表示 "1.2.3"
@@ -33,4 +37,70 @@ export function normalizeFullWidth(str: string): string {
         }
         return char;
     });
+}
+
+/**
+ * 从文件/文件夹名提取排序键
+ * 按优先级尝试：阿拉伯数字 → 中文数字 → 罗马数字
+ * @param name 文件名（不含路径，可含扩展名）
+ * @returns SortKey 数值数组或 null
+ */
+export function extractSortKey(name: string): SortKey {
+    if (!name || name.length === 0) {
+        return null;
+    }
+
+    // 优先级 1：阿拉伯数字/多级编号（最常见）
+    const arabicResult = extractArabicNumber(name);
+    if (arabicResult !== null) {
+        return arabicResult;
+    }
+
+    // 优先级 2：中文数字前缀
+    const chineseResult = extractChineseNumber(name);
+    if (chineseResult !== null) {
+        return chineseResult;
+    }
+
+    // 优先级 3：罗马数字前缀
+    const romanResult = extractRomanNumber(name);
+    if (romanResult !== null) {
+        return romanResult;
+    }
+
+    // 无法识别，返回 null
+    return null;
+}
+
+/**
+ * 比较两个排序键
+ * - 多级编号逐级比较
+ * - 短编号排在前面（[1] < [1, 1]）
+ * - null 值排在最后
+ * @param a 第一个排序键
+ * @param b 第二个排序键
+ * @returns 负数表示 a < b，正数表示 a > b，0 表示相等
+ */
+export function compareSortKeys(a: SortKey, b: SortKey): number {
+    // null 值排在最后
+    if (a === null && b === null) {
+        return 0;
+    }
+    if (a === null) {
+        return 1; // a 排在后面
+    }
+    if (b === null) {
+        return -1; // b 排在后面
+    }
+
+    // 逐级比较多级编号
+    const minLength = Math.min(a.length, b.length);
+    for (let i = 0; i < minLength; i++) {
+        if (a[i] !== b[i]) {
+            return a[i] - b[i];
+        }
+    }
+
+    // 如果前面都相等，短编号排在前面
+    return a.length - b.length;
 }
