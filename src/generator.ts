@@ -1,15 +1,16 @@
 import { DocNode } from './type/docNode.js';
-import { naturalSorter } from './utils.js';
+import { naturalSorter, extractSortKey, compareSortKeys } from './utils.js';
 
 /**
     * 递归排序树（排序同层的节点）
     * 规则：
     * 1. 优先级最高：Meta 中的 order 字段
-    * 2. 优先级次之：文件夹排在文件前面
-    * 3. 优先级最低：显示名称(DisplayName) 的自然排序
+    * 2. 优先级次之：从文件/文件夹名提取的 Sort_Key
+    * 3. 优先级再次：文件夹排在文件前面
+    * 4. 优先级最低：显示名称(DisplayName) 的自然排序
 */
 export function sortTree(nodes: DocNode[]): DocNode[] {
-    // 1. 先对当前层级进行排序【【【
+    // 1. 先对当前层级进行排序
     nodes.sort((a, b) => {
         // 规则 A: 比较 Order (如果都有 order)
         const orderA = a.meta?.order ?? Number.MAX_SAFE_INTEGER;
@@ -19,13 +20,25 @@ export function sortTree(nodes: DocNode[]): DocNode[] {
             return orderA - orderB; // 数字小的排前面
         }
 
-        // 规则 B: 文件夹优先
+        // 规则 B: 比较从文件名提取的 Sort_Key
+        const sortKeyA = extractSortKey(a.name);
+        const sortKeyB = extractSortKey(b.name);
+        
+        // 只有当至少一个有 Sort_Key 时才比较
+        if (sortKeyA !== null || sortKeyB !== null) {
+            const sortKeyComparison = compareSortKeys(sortKeyA, sortKeyB);
+            if (sortKeyComparison !== 0) {
+                return sortKeyComparison;
+            }
+        }
+
+        // 规则 C: 文件夹优先
         if (a.type !== b.type) {
             // 文件夹(-1) 排在 文件(1) 前面
             return a.type === 'dir' ? -1 : 1;
         }
 
-        // 规则 C: 按名称自然排序
+        // 规则 D: 按名称自然排序
         return naturalSorter(a.displayName!, b.displayName!);
     });
 
