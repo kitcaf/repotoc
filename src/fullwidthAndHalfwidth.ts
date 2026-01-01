@@ -1,0 +1,21 @@
+/**
+ * 全角字符转半角字符
+ * 主要处理全角数字 ０-９ 转换为半角 0-9
+ * 同时处理全角空格和其他常见全角字符
+ * @param str 输入字符串
+ * @returns 转换后的字符串
+ */
+export function normalizeFullWidth(str: string): string {
+    return str.replace(/[\uff00-\uffef]/g, (char) => {
+        const code = char.charCodeAt(0);
+        // 全角字符范围 0xFF01-0xFF5E 对应半角 0x21-0x7E
+        // 全角空格 0x3000 对应半角空格 0x20
+        if (code === 0x3000) {
+            return ' ';
+        }
+        if (code >= 0xff01 && code <= 0xff5e) {
+            return String.fromCharCode(code - 0xfee0);
+        }
+        return char;
+    });
+}

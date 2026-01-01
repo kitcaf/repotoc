@@ -1,5 +1,6 @@
 import { CHINESE_DIGITS, CHINESE_UNITS } from "./constants.js";
-import { normalizeFullWidth, SortKey } from "./utils.js";
+import { normalizeFullWidth } from "./fullwidthAndHalfwidth.js";
+import { SortKey } from "./utils.js"
 
 /**
  * 将中文数字字符串转换为阿拉伯数字

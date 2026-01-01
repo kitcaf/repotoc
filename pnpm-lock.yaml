@@ -14,6 +14,9 @@ importers:
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
+      jiti:
+        specifier: ^2.6.1
+        version: 2.6.1
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.2
@@ -30,9 +33,6 @@ importers:
       globals:
         specifier: ^16.5.0
         version: 16.5.0
-      jiti:
-        specifier: ^2.6.1
-        version: 2.6.1
       rimraf:
         specifier: ^6.1.2
         version: 6.1.2

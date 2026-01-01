@@ -7,10 +7,12 @@
 import { DocNode } from "./type/docNode.js";
 
 /**
- * 将扁平路径列表转换为Tire树形结构
- * 本质就是tire算法
+ * 将扁平路径列表转换为Tire树形结构 本质就是tire算法
+ * @param paths 
+ * @param linkPrefix 
+ * @returns 
  */
-export function buildTreeFromPaths(paths: string[]): DocNode[] {
+export function buildTreeFromPaths(paths: string[], linkPrefix: string): DocNode[] {
 
     //root指针：指向处于最上层的DocNode节点
     const root: DocNode[] = []
@@ -24,26 +26,28 @@ export function buildTreeFromPaths(paths: string[]): DocNode[] {
             const isFile = i === parts.length - 1 //路径的最后一个是md文件
             //查找当前层级是否存在这个pathName
             const existingNode: DocNode | undefined = currentLevel.find(node => node.name === pathName)
+            const normalizedPath = parts.slice(0, i + 1).join('/')
 
             if (existingNode) {
-                //理论上下一行不会触发，fast-glob 保证了路径唯一
                 if (isFile) console.warn(`Duplicate file found: ${filePath}`);
                 currentLevel = existingNode.children!
             }
             else { //如果不存在 -> 当前层级新建node
                 const docNode: DocNode = {
                     name: pathName, //非file文件目前还是有后缀的
-                    path: parts.slice(0, i + 1).join('/'), //重组路径,
+                    path: normalizedPath, //重组路径,
                     type: isFile ? 'file' : 'dir',
-                }
-
-                if (!isFile) { //不是file意味着文件夹一定是有chillder
-                    docNode.children = []
+                    linkPath: linkPrefix === '.' || !linkPrefix
+                        ? normalizedPath
+                        : `${linkPrefix}/${normalizedPath}`,
+                    children: isFile ? undefined : []
                 }
 
                 currentLevel.push(docNode)
 
-                if (!isFile) currentLevel = docNode.children!
+                if (!isFile) {
+                    currentLevel = docNode.children!
+                }
             }
         }
     }

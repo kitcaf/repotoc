@@ -1,5 +1,6 @@
 import { ROMAN_VALUES } from "./constants.js";
-import { normalizeFullWidth, SortKey } from "./utils.js";
+import { normalizeFullWidth } from "./fullwidthAndHalfwidth.js";
+import { SortKey } from "./utils.js"
 
 /**
  * 将罗马数字字符串转换为阿拉伯数字
@@ -48,7 +49,7 @@ export function romanToNumber(roman: string): number | null {
  * 校验字符串是否符合严格的罗马数字结构
  * 规则：Thousands(M) + Hundreds(C/D) + Tens(X/L) + Units(I/V)
  */
- 
+
 function isValidRomanStructure(roman: string): boolean {
     // 严格罗马数字正则
     // M* : 千位 (0-N个M)

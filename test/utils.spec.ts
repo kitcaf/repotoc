@@ -1,6 +1,53 @@
 // test/utils.spec.ts
 import { describe, it, expect } from 'vitest';
-import { extractSortKey, compareSortKeys } from '../src/utils';
+import { extractSortKey, compareSortKeys, calculatePathPrefix } from '../src/utils';
+
+describe('calculatePathPrefix', () => {
+    // README: ./README.md
+    // Scan:   ./docs
+    // Link:   docs/xxx.md
+    it('should return sub-directory name when scanning a sub-folder from root', () => {
+        const prefix = calculatePathPrefix('README.md', 'docs');
+        expect(prefix).toBe('docs');
+    });
+
+    // README: ./README.md
+    // Scan:   ./
+    // Link:   ./xxx.md
+    it('should return "." when scanning the same directory', () => {
+        expect(calculatePathPrefix('./README.md', './')).toBe('.');
+        expect(calculatePathPrefix('README.md', '.')).toBe('.');
+    });
+
+    // README: ./packages/pkg-a/README.md
+    // Scan:   ./packages/pkg-b/docs
+    // Link:   ../pkg-b/docs/xxx.md
+    it('should handle sibling directories correctly', () => {
+        const prefix = calculatePathPrefix('packages/pkg-a/README.md', 'packages/pkg-b/docs');
+        expect(prefix).toBe('../pkg-b/docs');
+    });
+
+    it('should handle deep nesting', () => {
+        const prefix = calculatePathPrefix('a/b/c/README.md', 'a/b/d/e');
+        // c -> b (..) -> d -> e
+        expect(prefix).toBe('../d/e');
+    });
+
+    // Although CLI typically handles relative paths, 
+    // path.relative supports absolute paths
+    it('should handle absolute paths', () => {
+        const readme = '/usr/user/project/README.md';
+        const scan = '/usr/user/project/src';
+        expect(calculatePathPrefix(readme, scan)).toBe('src');
+    });
+
+    it('should ensure output uses forward slashes', () => {
+        const prefix = calculatePathPrefix('README.md', 'docs/api');
+        expect(prefix).not.toContain('\\');
+        expect(prefix).toBe('docs/api');
+    });
+});
+
 
 describe('Utils Core Logic', () => {
     describe('extractSortKey', () => {

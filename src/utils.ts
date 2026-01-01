@@ -1,6 +1,21 @@
+import path from "node:path";
 import { extractArabicNumber } from "./arabicToNumber.js";
 import { extractChineseNumber } from "./chineseToNumber.js";
 import { extractRomanNumber } from "./romanToNumber.js";
+
+/**
+ * Calculate the relative path prefix from the directory where the README file
+ * is located to the scan directory (scanPath).
+ * @param readmePath 
+ * @param scanPath 
+ * @returns 
+ */
+export function calculatePathPrefix(readmePath: string, scanPath: string): string {
+    const readmeDir = path.dirname(readmePath);
+    let relativePath = path.relative(readmeDir, scanPath);
+    relativePath = relativePath.split(path.sep).join('/');
+    return relativePath === '' ? '.' : relativePath;
+}
 
 /**
  * 排序键类型
@@ -16,28 +31,6 @@ export const naturalSorter = new Intl.Collator(undefined, {
     numeric: true,
     sensitivity: 'base'
 }).compare;
-
-/**
- * 全角字符转半角字符
- * 主要处理全角数字 ０-９ 转换为半角 0-9
- * 同时处理全角空格和其他常见全角字符
- * @param str 输入字符串
- * @returns 转换后的字符串
- */
-export function normalizeFullWidth(str: string): string {
-    return str.replace(/[\uff00-\uffef]/g, (char) => {
-        const code = char.charCodeAt(0);
-        // 全角字符范围 0xFF01-0xFF5E 对应半角 0x21-0x7E
-        // 全角空格 0x3000 对应半角空格 0x20
-        if (code === 0x3000) {
-            return ' ';
-        }
-        if (code >= 0xff01 && code <= 0xff5e) {
-            return String.fromCharCode(code - 0xfee0);
-        }
-        return char;
-    });
-}
 
 /**
  * 从文件/文件夹名提取排序键

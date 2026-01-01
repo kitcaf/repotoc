@@ -1,4 +1,5 @@
-import { normalizeFullWidth, SortKey } from "./utils.js";
+import { normalizeFullWidth } from "./fullwidthAndHalfwidth.js";
+import { SortKey } from "./utils.js"
 
 /**
  * 从文件/文件夹名中提取阿拉伯数字前缀

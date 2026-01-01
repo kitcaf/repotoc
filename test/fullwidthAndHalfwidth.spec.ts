@@ -1,6 +1,6 @@
 import { describe, it } from 'vitest';
 import * as fc from 'fast-check';
-import { normalizeFullWidth } from '../src/utils.js';
+import { normalizeFullWidth } from '../src/fullwidthAndHalfwidth.js';
 
 describe('fullwidth and halfwidth test', () => {
     it('should convert fullwidth digits to halfwidth digits', () => {

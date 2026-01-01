@@ -1,17 +1,12 @@
-import path from 'node:path';
-
-// 配置接口
-export interface TocOptions {
-    rootDir: string;
-    maxDepth: number;
-}
+import path from "node:path";
+import { TocConfig } from "./type/index.js"
 
 /**
  * 解析 TOC 命令的参数
  * @param cwd 当前工作目录
  * @param args 命令行参数数组 (去除了 node 和 脚本路径后的)
  */
-export function parseCliArgs(cwd: string, args: string[]): TocOptions {
+export function parseCliArgs(tocConfig: TocConfig, args: string[]): TocConfig {
     // 1. 提取深度参数 (-d)
     const depthIndex = args.indexOf('-d');
     const maxDepth = depthIndex !== -1 && args[depthIndex + 1]
@@ -24,11 +19,10 @@ export function parseCliArgs(cwd: string, args: string[]): TocOptions {
 
     // 逻辑：如果有指定目录，就用指定的；否则默认用 'docs'
     const rootDir = specificDir
-        ? path.resolve(cwd, specificDir)
-        : path.resolve(cwd, 'docs');
+        ? path.resolve(tocConfig.cwd, specificDir)
+        : path.resolve(tocConfig.cwd, 'docs');
 
-    return {
-        rootDir,
-        maxDepth
-    };
+    tocConfig.maxDepth = maxDepth
+    tocConfig.scanPath = rootDir
+    return tocConfig
 }
