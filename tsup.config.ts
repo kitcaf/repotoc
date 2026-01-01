@@ -1,24 +1,28 @@
 // tsup.config.ts
 import { defineConfig } from 'tsup'
 
-export default defineConfig({
-    // 一次性打包 commands 下的所有文件，以及 index.ts
-    entry: [
-        // 'src/index.ts',
-        'src/commands/*.ts',
-    ],
-
-    // 2. 格式配置
-    format: ['esm'],
-
-    clean: true,
-
-    dts: true,
-
-    outDir: 'dist',
-    
-    minify: true,
-
-    splitting: true, //打开拆包 
-    sourcemap: false,
-})
+export default defineConfig([
+    {
+        entry: ['src/index.ts'],
+        format: ['esm'],
+        outDir: 'dist',
+        dts: true,
+        clean: true,
+        splitting: false,
+        //Keep the code lightweight，npm auto install 
+        external: ['fast-glob', 'gray-matter', 'chalk', 'jiti']
+    },
+    {
+        entry: [
+            'src/commands/*.ts',
+        ],
+        format: ['esm'],
+        clean: true,
+        outDir: 'dist',
+        banner: {
+            js: '#!/usr/bin/env node',
+        },
+        minify: true,
+        splitting: false,
+        external: ['fast-glob', 'gray-matter', 'chalk', 'jiti']
+    }])

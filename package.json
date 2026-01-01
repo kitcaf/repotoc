@@ -2,13 +2,14 @@
   "name": "@kitcaf/tocgen",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "tsx src/commands/toc.ts --watch",
     "build": "tsup",
     "test": "vitest",
     "lint": "eslint"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "bin",
@@ -16,8 +17,10 @@
     "README.md",
     "LICENSE"
   ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
-    "toc": "bin/toc.mjs"
+    "toc": "./bin/toc.js"
   },
   "type": "module",
   "keywords": [],
