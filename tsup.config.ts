@@ -17,11 +17,8 @@ export default defineConfig([
             'src/commands/*.ts',
         ],
         format: ['esm'],
-        clean: true,
         outDir: 'dist',
-        banner: {
-            js: '#!/usr/bin/env node',
-        },
+        clean: true,
         minify: true,
         splitting: false,
         external: ['fast-glob', 'gray-matter', 'chalk', 'jiti']
