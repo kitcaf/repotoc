@@ -1,6 +1,6 @@
 {
   "name": "@kitcaf/tocgen",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "scripts": {
     "dev": "tsx src/commands/toc.ts --watch",
