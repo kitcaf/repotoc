@@ -1,5 +1,5 @@
 ## 项目介绍 (project introduction)
---- 
+
 > **专门为 GitHub 知识库和文档库打造的自动化目录生成工具。**
 > *Automated Table of Contents Generator for GitHub Documentation Libraries.*
 
@@ -8,7 +8,7 @@
 `@kitcaf/tocgen` 完美解决了这个问题。它能像人类一样理解你的文件名（支持中文、罗马数字混排），自动扫描整个仓库，生成结构清晰的目录树，并直接注入到你的主页文档中。
 
 ## 核心痛点 (The Problem)
---- 
+
 如果你在 GitHub 上维护过类似《学习笔记》、《技术文档》或《电子书》这样的仓库，你一定遇到过：
 
 1. **手动维护地狱**：新增了 `docs/第十章/1.md`，却忘了在根目录 `README` 加链接，读者根本找不到。
@@ -17,7 +17,7 @@
 
 
 ## 核心特性 (Features)
---- 
+
 * **GitHub 友好**：生成的链接完美兼容 GitHub Markdown 渲染规则，点击即跳转。
 * **智能混合排序**：
 * 绝不仅仅是按字母排！它能“读懂”文件名中的数字。
@@ -30,7 +30,7 @@
 * **零配置起步**：默认配置即可满足 90% 的需求，也支持 `toc.config.ts` 深度定制。
 
 ## 安装 (Installation)
---- 
+
 ```bash
 # 全局安装 (推荐，方便在任何项目使用)
 npm install -g @kitcaf/tocgen
@@ -46,7 +46,7 @@ pnpm add -g @kitcaf/tocgen
 > 如果你的文档在其他位置（例如项目根目录 `.`），请参考下方的 [配置 (Configuration)](https://www.google.com/search?q=%23%E9%85%8D%E7%BD%AE-configuration) 章节。
 
 ### 1. 标记
---- 
+
 在需要构建目录的 `README.md` 中加入标记`<!--toc-->`：
 
 ```markdown
@@ -70,7 +70,7 @@ toc
 ```
 
 ## 配置 (Configuration)
---- 
+
 ```typescript
 import { defineConfig } from '@kitcaf/tocgen';
 
@@ -89,7 +89,7 @@ export default defineConfig({
 ```
 
 ## 未来计划 (Roadmap)
---- 
+
 未来计划包括：
 
 * [ ] **自定义模板 (Custom Templates)**
@@ -99,5 +99,5 @@ export default defineConfig({
 * [ ] **GitHub Actions 集成 (CI/CD)**
 
 ## License
---- 
+
 ISC © [Kitcaf](https://github.com/kitcaf)
