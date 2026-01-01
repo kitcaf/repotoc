@@ -101,7 +101,4 @@ export default defineConfig({
 
 ## License
 
-本项目采用 **ISC 协议** 开源。
-(ISC 是一种非常宽松的自由软件许可证，功能上等同于 MIT 或 BSD 协议。这意味着你可以自由地使用、复制、修改本项目，甚至用于商业目的，只需保留版权声明。)
-
-Copyright (c) 2025 Kitcaf
+ISC © Kitcaf[https://github.com/kitcaf]
