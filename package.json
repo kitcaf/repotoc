@@ -6,7 +6,8 @@
     "dev": "tsx src/commands/toc.ts --watch",
     "build": "tsup",
     "test": "vitest",
-    "lint": "eslint"
+    "lint": "eslint",
+    "publish": "version patch && pnpm build && npm publish"
   },
   "publishConfig": {
     "access": "public"
