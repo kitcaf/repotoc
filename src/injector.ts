@@ -7,7 +7,6 @@ import { TAG_MARK, TAG_CLOSE } from "./constants.js"
  * 用户只需在md文件中输入一次 <!--toc--> 即可
  * 第一次执行：自动在目录后面补充 <!--tocEnd-->
  * 第二次执行：在两个标记之间自动更新目录内容
- * 
  * 还存在很多的边界情况 --- 后面考虑
  * @param readmePath 目标md文件路径
  * @param newToc 生成的新目录内容
