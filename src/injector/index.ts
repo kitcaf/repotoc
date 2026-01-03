@@ -43,8 +43,7 @@ export async function updateReadme(
         return {
             success: false,
             message: `Failed to read file: ${filePath}`,
-            cleanedRegions: 0,
-            moveDetected: false
+            cleanedRegions: 0
         };
     }
 
@@ -63,8 +62,7 @@ export async function updateReadme(
         return {
             success: false,
             message: 'No <!--toc--> mark found. Please add <!--toc--> where you want the TOC to appear.',
-            cleanedRegions: tocEnds.length,
-            moveDetected: false
+            cleanedRegions: tocEnds.length
         };
     }
 
@@ -86,8 +84,7 @@ export async function updateReadme(
                 return {
                     success: false,
                     message: 'Cleanup cancelled by user.',
-                    cleanedRegions: 0,
-                    moveDetected: analysis.moveDetected
+                    cleanedRegions: 0
                 };
             }
         } else if (!autoApprove) {
@@ -95,8 +92,7 @@ export async function updateReadme(
             return {
                 success: false,
                 message: preview.summary,
-                cleanedRegions: 0,
-                moveDetected: analysis.moveDetected
+                cleanedRegions: 0
             };
         }
     }
@@ -111,15 +107,13 @@ export async function updateReadme(
         return {
             success: false,
             message: `Failed to write file: ${filePath}`,
-            cleanedRegions: 0,
-            moveDetected: analysis.moveDetected
+            cleanedRegions: 0
         };
     }
 
     return {
         success: true,
         message: 'TOC updated successfully.',
-        cleanedRegions: analysis.staleRegions.length,
-        moveDetected: analysis.moveDetected
+        cleanedRegions: analysis.staleRegions.length
     };
 }

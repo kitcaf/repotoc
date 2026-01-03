@@ -30,7 +30,6 @@ export interface DocumentAnalysis {
     tocEnds: TocEndInfo[];
     activeMark: TocMarkInfo | null;
     staleRegions: StaleRegion[];
-    moveDetected: boolean;
 }
 
 /** Preview info for a single region to be cleaned */
@@ -62,7 +61,6 @@ export interface InjectionResult {
     success: boolean;
     message: string;
     cleanedRegions: number;
-    moveDetected: boolean;
 }
 
 /** Cleanup info for user confirmation (Future feature) */

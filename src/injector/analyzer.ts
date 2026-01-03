@@ -25,7 +25,6 @@ export function analyzeDocument(
     tocEnds: TocEndInfo[]
 ): DocumentAnalysis {
     const staleRegions: StaleRegion[] = [];
-    let moveDetected = false;
 
     // 1. Pair marks with ends (each mark connects to nearest subsequent end)
     // (Optimized: O(N + M)) tocMarks and tocEnds is sort by lineIndex after Scanner
@@ -84,7 +83,6 @@ export function analyzeDocument(
             startLine,
             endLine: end.lineIndex
         });
-        moveDetected = true;
     }
 
     // B. Non-active complete regions (duplicate/copy-paste) 
@@ -118,7 +116,6 @@ export function analyzeDocument(
                     startLine: oldTocStart,
                     endLine: matchingEnd.lineIndex
                 });
-                moveDetected = true;
             }
         }
     }
@@ -131,7 +128,6 @@ export function analyzeDocument(
         tocMarks,
         tocEnds,
         activeMark,
-        staleRegions,
-        moveDetected
+        staleRegions
     };
 }
