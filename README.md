@@ -20,10 +20,12 @@
 
 * **GitHub 友好**：生成的链接完美兼容 GitHub Markdown 渲染规则，点击即跳转。
 * **智能混合排序**：可以自动识别文件名中的数字排序。
- - * ✅ 阿拉伯数字：`1.`, `2.`, `10.`
- - * ✅ 中文数字：`第一章`, `十二`, `第三节`
- - * ✅ 罗马数字：`I`, `IV`, `X`
+  * ✅ 阿拉伯数字：`1.`, `2.`, `10.`
+  * ✅ 中文数字：`第一章`, `十二`, `第三节`
+  * ✅ 罗马数字：`I`, `IV`, `X`
 * **无损注入**：只需要要使用 `<!--toc-->` 标记，自动更新相应的目录区域
+  * 仅需维护单一标记 `<!--toc-->`
+  * 无论是原位更新、位置迁移还是废弃标记清理，都能构建出精确的“删除-插入”操作链，实现对文档内容的零侵入修改
 * **零配置起步**：默认配置即可满足 90% 的需求，也支持 `toc.config.ts` 自定义。
 
 ## 安装 (Installation)
@@ -44,7 +46,7 @@ pnpm add -g @kitcaf/tocgen
 
 ### 1. 标记
 
-在需要构建目录的 `README.md` 中加入标记`<!--toc-->`：
+在需要构建目录的 `README.md` 中加入标记`<!--toc-->`（输出toc加注释按键）：**请保持独立的一行并且无其他字符**
 
 ```markdown
 # 我的知识库
@@ -89,37 +91,12 @@ export default defineConfig({
 
 未来计划包括：
 
+* [ ] **自定义映射配置 (Mapping & Override)**
 * [ ] **自定义模板 (Custom Templates)**
 * [ ] **多文档库支持 (Multi-Repo / Monorepo Support)**
-* [ ] **自定义映射配置 (Mapping & Override)**
-* [ ] **自动监听 (Watch Mode)**
 * [ ] **GitHub Actions 集成 (CI/CD)**
+* [ ] **自动监听 (Watch Mode)**
 
 ## License
 
 ISC © [Kitcaf](https://github.com/kitcaf)
-
-
-<!-- toc -->
-- 第一章
-  - [测试的重要性](docs/%E7%AC%AC%E4%B8%80%E7%AB%A0/test.md)
-- 第二章
-  - [学习多智能体](docs/%E7%AC%AC%E4%BA%8C%E7%AB%A0/test.md)
-- 第三章
-  - [学习智能体](docs/%E7%AC%AC%E4%B8%89%E7%AB%A0/test.md)
-- 第四章
-  - [你好](docs/%E7%AC%AC%E5%9B%9B%E7%AB%A0/test.md)
-
-<!--tocEnd:offset=9-->
-
-<!-- toc -->
-- 第一章
-  - [测试的重要性](docs/%E7%AC%AC%E4%B8%80%E7%AB%A0/test.md)
-- 第二章
-  - [学习多智能体](docs/%E7%AC%AC%E4%BA%8C%E7%AB%A0/test.md)
-- 第三章
-  - [学习智能体](docs/%E7%AC%AC%E4%B8%89%E7%AB%A0/test.md)
-- 第四章
-  - [你好](docs/%E7%AC%AC%E5%9B%9B%E7%AB%A0/test.md)
-
-<!--tocEnd:offset=9-->

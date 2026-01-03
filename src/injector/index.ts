@@ -61,7 +61,7 @@ export async function updateReadme(
         }
         return {
             success: false,
-            message: 'No <!--toc--> mark found. Please add <!--toc--> where you want the TOC to appear.',
+            message: 'No mark found. Please add <!--toc--> where you want the TOC to appear.\nTip: Please keep the tag on a separate line.',
             cleanedRegions: tocEnds.length
         };
     }
