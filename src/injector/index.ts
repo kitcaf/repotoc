@@ -82,7 +82,7 @@ export async function updateReadme(
                 description: preview.summary
             });
 
-            if (!confirmed) {
+            if (!confirmed) { // Refuse to update the directory
                 return {
                     success: false,
                     message: 'Cleanup cancelled by user.',
