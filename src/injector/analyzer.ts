@@ -28,16 +28,29 @@ export function analyzeDocument(
     let moveDetected = false;
 
     // 1. Pair marks with ends (each mark connects to nearest subsequent end)
-    for (const mark of tocMarks) {
-        const matchingEnd = tocEnds.find(e =>
-            e.lineIndex > mark.lineIndex && !e.hasMatchingMark
-        );
+    // (Optimized: O(N + M)) tocMarks and tocEnds is sort by lineIndex after Scanner
+    // Only look at the position sequence (mark the nearest end after)
+    let endIdx = 0;
 
-        if (matchingEnd) {
+    for (const mark of tocMarks) {
+        while (
+            endIdx < tocEnds.length &&
+            (tocEnds[endIdx].lineIndex < mark.lineIndex || tocEnds[endIdx].hasMatchingMark)
+        ) {
+            endIdx++;
+        }
+
+        if (endIdx < tocEnds.length) {
+            const matchingEnd = tocEnds[endIdx];
+
             mark.hasMatchingEnd = true;
             mark.matchingEndIndex = matchingEnd.lineIndex;
+
             matchingEnd.hasMatchingMark = true;
             matchingEnd.matchingMarkIndex = mark.lineIndex;
+
+            // Advance pointer (an End can only be used once)
+            endIdx++;
         }
     }
 
@@ -47,6 +60,7 @@ export function analyzeDocument(
     if (tocMarks.length === 1) {
         activeMark = tocMarks[0];
     } else if (tocMarks.length > 1) {
+        // find not match tocMarks
         const bareMarks = tocMarks.filter(m => !m.hasMatchingEnd);
 
         if (bareMarks.length > 0) {
@@ -58,7 +72,7 @@ export function analyzeDocument(
         }
     }
 
-    // 3. Identify stale regions
+    // 3. Identify stale regions 
 
     // A. Orphan TOC_Ends (backward move or deleted mark)
     const orphanEnds = tocEnds.filter(e => !e.hasMatchingMark);
@@ -73,7 +87,8 @@ export function analyzeDocument(
         moveDetected = true;
     }
 
-    // B. Non-active complete regions (duplicate/copy-paste)
+    // B. Non-active complete regions (duplicate/copy-paste) 
+    // have many regions block 
     for (const mark of tocMarks) {
         if (mark === activeMark) continue;
 
@@ -87,10 +102,12 @@ export function analyzeDocument(
     }
 
     // C. Forward move detection (active mark moved up, content between mark and end increased)
+    // need cal offset and actualDistance
     if (activeMark?.hasMatchingEnd && activeMark.matchingEndIndex !== undefined) {
         const matchingEnd = tocEnds.find(e => e.lineIndex === activeMark!.matchingEndIndex);
 
         if (matchingEnd && matchingEnd.offset > 0) {
+            // TODO: Whether to subtract 1 or not. 
             const actualDistance = matchingEnd.lineIndex - activeMark.lineIndex - 1;
 
             if (actualDistance > matchingEnd.offset) {
