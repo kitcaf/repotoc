@@ -33,6 +33,30 @@ export interface DocumentAnalysis {
     moveDetected: boolean;
 }
 
+/** Preview info for a single region to be cleaned */
+export interface RegionPreview {
+    regionIndex: number;
+    startLine: number;
+    endLine: number;
+    type: StaleRegion['type'];
+    /** First line content */
+    firstLineContent: string;
+    /** Last line content */
+    lastLineContent: string;
+    /** Total lines in this region */
+    lineCount: number;
+}
+
+/** Cleanup preview result */
+export interface CleanupPreview {
+    /** Whether cleanup is needed (has stale regions) */
+    needsCleanup: boolean;
+    /** Regions to be cleaned */
+    regions: RegionPreview[];
+    /** Human-readable summary */
+    summary: string;
+}
+
 /** Injection result */
 export interface InjectionResult {
     success: boolean;
