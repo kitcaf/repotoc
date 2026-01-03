@@ -113,6 +113,9 @@ describe('Injector Analyzer', () => {
             // First complete region becomes stale
             const completeRegion = result.staleRegions.find(r => r.type === 'complete');
             expect(completeRegion).toBeDefined();
+            expect(completeRegion!.startLine).toBe(0);
+            expect(completeRegion!.endLine).toBe(2);
+
         });
     });
 
@@ -137,6 +140,8 @@ describe('Injector Analyzer', () => {
             expect(result.moveDetected).toBe(true);
             const movedRegion = result.staleRegions.find(r => r.type === 'moved-content');
             expect(movedRegion).toBeDefined();
+            expect(movedRegion?.startLine).toBe(3)
+            expect(movedRegion?.endLine).toBe(4)
         });
 
         it('should not detect move when distance matches offset', () => {
@@ -156,6 +161,7 @@ describe('Injector Analyzer', () => {
             const result = analyzeDocument(lines, tocMarks, tocEnds);
 
             expect(result.moveDetected).toBe(false);
+            expect(result.staleRegions.length).toBe(0)
             expect(result.staleRegions.filter(r => r.type === 'moved-content')).toHaveLength(0);
         });
     });

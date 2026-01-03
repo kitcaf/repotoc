@@ -41,7 +41,7 @@ export function scanTags(lines: string[]): { tocMarks: TocMarkInfo[]; tocEnds: T
             tocMarks.push({
                 lineIndex: i,
                 originalText: line.trim(),
-                hasMatchingEnd: false
+                hasMatchingEnd: false // default false, while later will adjust
             });
             continue;
         }
@@ -54,7 +54,7 @@ export function scanTags(lines: string[]): { tocMarks: TocMarkInfo[]; tocEnds: T
             tocEnds.push({
                 lineIndex: i,
                 offset: isNaN(offset) ? 0 : offset,
-                hasMatchingMark: false
+                hasMatchingMark: false // default false, while later will adjust
             });
         }
     }
