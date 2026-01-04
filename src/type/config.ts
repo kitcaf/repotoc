@@ -72,14 +72,23 @@ export interface TocConfig {
     /** Absolute path of output file */
     readmePath: string;
 
-    /** Ignore patterns */
-    ignore: string[];
+    // /**
+    //  * Glob patterns to ignore during scanning. 
+    //  * as a parameter for fast-glob
+    //  * Use this for general exclusion rules like excluding test files, 
+    //  * drafts folders, or system directories.
+    //  * * @example ['**/*.test.md', '**/_drafts/**']
+    //  * @performance Files matching these patterns are NOT loaded into memory.
+    //  */
+    ignore?: string[];
 
     /** Max scan depth */
     maxDepth: number;
 
-    /** * Mapping rules 
-     * (Defaults to empty object if not provided by user)
-     */
-    mapping: MappingConfig;
+    /**
+    * Custom mapping rules (rename, sort, hide).
+    * Use '$ignore' inside mapping for specific, path-based hiding logic
+    * after the files have been scanned.
+    */
+    mapping?: MappingConfig;
 }

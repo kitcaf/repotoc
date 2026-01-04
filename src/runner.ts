@@ -16,9 +16,9 @@ export async function runCli(
     options: TocConfig,
     injectorOptions: InjectorOptions = {}
 ): Promise<RunCliResult> {
-    const { scanPath, readmePath } = options;
+    const { scanPath, readmePath, ignore } = options;
 
-    const paths = await scanDocs({ cwd: scanPath });
+    const paths = await scanDocs({ cwd: scanPath, ignore });
     if (!paths.length) {
         throw new Error('No Markdown files found in the target directory.');
     }
