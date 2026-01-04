@@ -20,3 +20,22 @@ export interface ConfigMappingNode {
     children: Map<string, ConfigMappingNode>;
 }
 
+/**
+ * Complete set of mapping rules
+ */
+export interface MappingRules {
+    /** * The root of the Trie structure for path-based matching.
+     * Handles exact paths (e.g., "a/b/c") and nested configs.
+     * because MappingRules fous on find 
+     * so the type of trie is Map, rather a array
+     */
+    trie: Map<string, ConfigMappingNode>;
+
+    /** * Fallback rules for basenames.
+     * Key is the filename without path (e.g., "intro.md").
+     * Used when no exact path match is found in the Trie.
+     */
+    basename: Map<string, { displayName?: string; order?: number; ignore?: boolean }>;
+}
+
+
