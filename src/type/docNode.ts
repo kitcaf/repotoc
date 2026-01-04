@@ -35,7 +35,13 @@ export interface DocNode {
      * 元数据
      */
     meta?: {
-        title?: string;  // 从文件内容提取的标题
-        order?: number;  // 排序权重
+        title?: string;     // comefrom Frontmatter
+        order?: number;     // comefrom Frontmatter
+        ignore?: boolean;   // comefrom Frontmatter
+
+
+        // ---comefrom userConfig Mapping---
+        mappingName?: string;
+        mappingOrder?: number;
     }
 }
