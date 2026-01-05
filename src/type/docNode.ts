@@ -43,5 +43,6 @@ export interface DocNode {
         // ---comefrom userConfig Mapping---
         mappingName?: string;
         mappingOrder?: number;
+        mappingIgnore?: boolean;
     }
 }
