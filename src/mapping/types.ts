@@ -17,7 +17,7 @@ export interface ConfigMappingNode {
     ignore?: boolean;
 
     /** Child nodes map (Key is the path segment name) */
-    children: Map<string, ConfigMappingNode>;
+    children: Map<string, ConfigMappingNode> | undefined;
 }
 
 /**

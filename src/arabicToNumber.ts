@@ -12,10 +12,10 @@ import { SortKey } from "./utils.js"
  * - 多级编号：1.2.3, 1-2-3, 1.2-intro.md
  * 
  * @param name 文件/文件夹名（不含路径，可含扩展名）
- * @returns SortKey 数值数组或 null
+ * @returns SortKey 数值数组或 
  */
-export function extractArabicNumber(name: string): SortKey {
-    if (!name || name.length === 0) {
+export function extractArabicNumber(name: string): SortKey | null {
+    if (name == null || name.length === 0) {
         return null;
     }
 
