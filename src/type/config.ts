@@ -92,5 +92,5 @@ export interface TocConfig {
     * Use '$ignore' inside mapping for specific, path-based hiding logic
     * after the files have been scanned.
     */
-    mapping?: MappingRules;
+    mappingRules?: MappingRules;
 }

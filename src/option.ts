@@ -48,7 +48,7 @@ export async function resolveConfig(): Promise<TocConfig> {
         readmePath: readmePath,
         ignore: finalConfig.ignore || [],
         maxDepth: finalConfig.maxDepth || 3,
-        mapping: buildMappingTree(finalConfig.mapping)
+        mappingRules: buildMappingTree(finalConfig.mapping)
     }
 }
 
