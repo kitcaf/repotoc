@@ -1,30 +1,35 @@
+import { getEffectiveDisplayName, getEffectiveOrder, isIgnored } from './metaSort.js';
 import { DocNode } from './type/index.js';
 import { naturalSorter, extractSortKey, compareSortKeys } from './utils.js';
 
 /**
-    * 递归排序树（排序同层的节点）
-    * 规则：
-    * 1. 优先级最高：Meta 中的 order 字段
-    * 2. 优先级次之：从文件/文件夹名提取的 Sort_Key
-    * 3. 优先级再次：文件夹排在文件前面
-    * 4. 优先级最低：显示名称(DisplayName) 的自然排序
-*/
+ * Recursively sort tree nodes at each level.
+ * Sorting rules (in priority order):
+ * 1. Highest: getEffectiveOrder (mappingOrder > meta.order)
+ *    - Nodes with order always come before nodes without order
+ * 2. Second: Sort_Key extracted from filename
+ * 3. Third: Directories before files
+ * 4. Lowest: Natural sort by filename
+ */
 export function sortTree(nodes: DocNode[]): DocNode[] {
-    // 1. 先对当前层级进行排序
     nodes.sort((a, b) => {
-        // 规则 A: 比较 Order (如果都有 order)
-        const orderA = a.meta?.order ?? Number.MAX_SAFE_INTEGER;
-        const orderB = b.meta?.order ?? Number.MAX_SAFE_INTEGER;
+        // Rule A: Compare order (mappingOrder > meta.order)
+        const orderA = getEffectiveOrder(a);
+        const orderB = getEffectiveOrder(b);
 
-        if (orderA !== orderB) {
-            return orderA - orderB; // 数字小的排前面
+        // Nodes with order come before nodes without order
+        if (orderA !== undefined || orderB !== undefined) {
+            const valA = orderA ?? Number.MAX_SAFE_INTEGER;
+            const valB = orderB ?? Number.MAX_SAFE_INTEGER;
+            if (valA !== valB) {
+                return valA - valB; // Lower number comes first
+            }
         }
 
-        // 规则 B: 比较从文件名提取的 Sort_Key
+        // Rule B: Compare Sort_Key extracted from filename
         const sortKeyA = extractSortKey(a.name);
         const sortKeyB = extractSortKey(b.name);
 
-        // 只有当至少一个有 Sort_Key 时才比较
         if (sortKeyA !== null || sortKeyB !== null) {
             const sortKeyComparison = compareSortKeys(sortKeyA, sortKeyB);
             if (sortKeyComparison !== 0) {
@@ -32,17 +37,16 @@ export function sortTree(nodes: DocNode[]): DocNode[] {
             }
         }
 
-        // 规则 C: 文件夹优先
+        // Rule C: Directories come before files
         if (a.type !== b.type) {
-            // 文件夹(-1) 排在 文件(1) 前面
             return a.type === 'dir' ? -1 : 1;
         }
 
-        // 规则 D: 按名称自然排序
-        return naturalSorter(a.displayName!, b.displayName!);
+        // Rule D: Natural sort by filename
+        return naturalSorter(a.name, b.name);
     });
 
-    // 2. 递归排序子节点
+    // Recursively sort children
     for (const node of nodes) {
         if (node.children) {
             sortTree(node.children);
@@ -53,27 +57,31 @@ export function sortTree(nodes: DocNode[]): DocNode[] {
 }
 
 /**
- * 渲染 Markdown 列表
- * @param nodes 排序后的树
- * @param depth 当前缩进深度
- * @returns 
+ * Render document tree to Markdown list format.
+ * @param nodes Sorted tree nodes
+ * @param depth Current indentation depth
+ * @returns Markdown string
  */
 export function renderToMarkdown(nodes: DocNode[], depth = 0): string {
     let output = '';
-    const indent = '  '.repeat(depth); // 使用 2 空格缩进
+    const indent = '  '.repeat(depth);
 
     for (const node of nodes) {
-        // 1. 处理文件节点（文件节点是需要带链接的）
-        if (node.type === 'file') { //URL 编码，防止中文路径 404
-            // replace(/ /g, '%20') 是为了处理空格，encodeURI 处理中文
-            const safePath = encodeURI(node.linkPath!);
-            output += `${indent}- [${node.displayName}](${safePath})\n`;
+        // Skip ignored nodes (mappingIgnore > meta.ignore)
+        if (isIgnored(node)) {
+            continue;
         }
-        // 2. 处理文件夹节点
-        else {
-            output += `${indent}- ${node.displayName}\n`;
 
-            // 递归渲染子节点
+        const displayName = getEffectiveDisplayName(node);
+
+        if (node.type === 'file') {
+            // URL encode to prevent 404 for Chinese paths
+            const safePath = encodeURI(node.linkPath!);
+            output += `${indent}- [${displayName}](${safePath})\n`;
+        } else {
+            output += `${indent}- ${displayName}\n`;
+
+            // Recursively render children
             if (node.children) {
                 output += renderToMarkdown(node.children, depth + 1);
             }
@@ -82,8 +90,3 @@ export function renderToMarkdown(nodes: DocNode[], depth = 0): string {
 
     return output;
 }
-
-
-
-
-
