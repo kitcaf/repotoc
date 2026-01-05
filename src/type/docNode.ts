@@ -27,15 +27,16 @@ export interface DocNode {
     children?: DocNode[];
 
     /**
-     * 实际展示（UI渲染/生成目录）展示的名字
-     */
-    displayName?: string
-
-    /**
      * 元数据
      */
     meta?: {
-        title?: string;  // 从文件内容提取的标题
-        order?: number;  // 排序权重
+        title?: string;     // comefrom Frontmatter
+        order?: number;     // comefrom Frontmatter
+        ignore?: boolean;   // comefrom Frontmatter
+
+        // ---comefrom userConfig Mapping---
+        mappingName?: string;
+        mappingOrder?: number;
+        mappingIgnore?: boolean;
     }
 }

@@ -10,7 +10,7 @@ export default defineConfig([
         clean: true,
         splitting: false,
         //Keep the code lightweight，npm auto install 
-        external: ['fast-glob', 'gray-matter', 'chalk', 'jiti']
+        external: ['fast-glob', 'gray-matter', 'jiti']
     },
     {
         entry: [
@@ -21,5 +21,5 @@ export default defineConfig([
         clean: true,
         minify: true,
         splitting: false,
-        external: ['fast-glob', 'gray-matter', 'chalk', 'jiti']
+        external: ['fast-glob', 'gray-matter', 'jiti']
     }])

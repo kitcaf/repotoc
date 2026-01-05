@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'node:path';
 import { DocNode } from '../src/type/docNode.js';
 import { enrichTree } from '../src/parser.js';
+import { getEffectiveDisplayName } from "../src/metaSort.js"
 
 
 const TEMP_DIR = 'test_temp_docs_parser';
@@ -48,7 +49,7 @@ describe('Parser', () => {
         }];
 
         const res = await enrichTree(nodes);
-        expect(res[0].displayName).toBe('我是Meta标题');
+        expect(getEffectiveDisplayName(res[0])).toBe('我是Meta标题');
     });
 
     it('priority2 Use Extract h1', async () => {
@@ -57,7 +58,7 @@ describe('Parser', () => {
         }];
 
         const res = await enrichTree(nodes);
-        expect(res[0].displayName).toBe('真正的标题在这里');
+        expect(getEffectiveDisplayName(res[0])).toBe('真正的标题在这里');
     });
 
     it('priority3 Use the file name', async () => {
@@ -66,7 +67,7 @@ describe('Parser', () => {
         }];
 
         const res = await enrichTree(nodes);
-        expect(res[0].displayName).toBe('just_file');
+        expect(getEffectiveDisplayName(res[0])).toBe('just_file');
         expect(res[0].meta?.order).toBe(1);
     });
 });

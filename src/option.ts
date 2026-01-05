@@ -2,6 +2,7 @@ import { createJiti } from "jiti";
 import { TocConfig, UserConfig } from "./type/index.js";
 import path from "node:path";
 import fs from 'node:fs';
+import { buildMappingTree } from "./mapping/mappingTree.js";
 
 /**
  * Default configuration values
@@ -47,6 +48,7 @@ export async function resolveConfig(): Promise<TocConfig> {
         readmePath: readmePath,
         ignore: finalConfig.ignore || [],
         maxDepth: finalConfig.maxDepth || 3,
+        mappingRules: buildMappingTree(finalConfig.mapping)
     }
 }
 
