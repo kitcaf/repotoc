@@ -228,4 +228,4 @@ export default defineConfig({
 
 ## License
 
-ISC © [Kitcaf](https://github.com/kitcaf)
+MIT © [Kitcaf](https://github.com/kitcaf)

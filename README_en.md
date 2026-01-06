@@ -235,4 +235,4 @@ You are very welcome to ask questions or make suggestions. Whether it's a bug re
 
 ## License
 
-ISC © [Kitcaf](https://github.com/kitcaf)
+MIT © [Kitcaf](https://github.com/kitcaf)
