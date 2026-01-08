@@ -1,3 +1,16 @@
+<div align="center">
+
+# @kitcaf/tocgen
+
+[![NPM Version](https://img.shields.io/npm/v/@kitcaf/tocgen)](https://www.npmjs.com/package/@kitcaf/tocgen)
+
+<p align="center">
+  <a href="./README_en.md">English</a> | <span>简体中文</span>
+</p>
+
+</div>
+
+
 ## 项目介绍 (project introduction)
 
 > **专门为 GitHub 知识库和文档库打造的极速自动化目录生成工具。**
@@ -6,6 +19,8 @@
 在 GitHub 上维护大型知识库（Knowledge Base）或多章节文档时，最令人头疼的就是手动维护 `README.md` 里的目录索引。每当你新增一个文件或调整章节顺序，都需要手动更新链接。
 
 `@kitcaf/tocgen` 完美解决了这个问题。它能像人类一样理解你的文件名（支持中文、罗马数字混排），自动扫描整个仓库，生成结构清晰的目录树，并直接注入到你的主页文档中。
+
+**如果您觉得 `@kitcaf/tocgen` 对您有帮助，麻烦您动动小手给我点个 Star ⭐️，这对我是莫大的鼓励！**
 
 ## 痛点 (The Problem)
 
@@ -22,6 +37,7 @@
   * ✅ 阿拉伯数字：`1.`, `2.`, `10.`
   * ✅ 中文数字：`第一章`, `十二`, `第三节`
   * ✅ 罗马数字：`I`, `IV`, `X`
+* 多源元数据支持：支持通过文件名、Frontmatter或配置文件灵活控制标题与排序。
 * **无损注入**：只需要要使用 `<!--toc-->` 标记，自动更新相应的目录区域
   * 仅需维护单一标记 `<!--toc-->`
   * 无论是原位更新、位置迁移还是废弃标记清理，都能**构建出精确的“删除-插入”操作链**，实现对文档内容的零侵入修改
@@ -69,9 +85,32 @@ toc
 
 ## 配置 (Configuration)
 
-工具支持通过 toc.config.ts 进行定制化配置
+工具支持通过 toc.config.ts 和md文件内进行定制化配置
 
-### 基础配置
+### 文件内配置 (Frontmatter)
+
+可以直接在 Markdown 文件的头部使用 YAML Frontmatter 进行单文件控制
+
+支持以下字段：
+
+* **`title`** (string): 自定义在目录中显示的标题（优先级：Config > Frontmatter > H1 > 文件名）。
+* **`order`** (number): 手动指定排序权重。数字越小，在同级目录中越靠前。
+* **`ignore`** (boolean): 设置为 `true` 可强制隐藏该文件。
+
+**示例：**
+
+在 `docs/guide/intro.md` 文件头部：
+
+```markdown
+---
+title: 快速入门指南
+order: 1
+ignore: false
+---
+
+# 正文内容...
+
+### `toc.config.ts`基础配置
 
 ```typescript
 import { defineConfig } from '@kitcaf/tocgen';
@@ -91,7 +130,7 @@ export default defineConfig({
 });
 ```
 
-### 映射规则 (Mapping)
+### `toc.config.ts`映射规则 (Mapping)
 
 mapping 字段用于修改生成的目录结构，支持以下**三类规则**。
 
@@ -183,6 +222,10 @@ export default defineConfig({
 * [ ] **GitHub Actions 集成 (CI/CD)**
 * [ ] **自动监听 (Watch Mode)**
 
+## 贡献与支持
+
+同时非常欢迎您提出问题或建议。无论是 Bug 报告还是功能请求，**欢迎随时提交 Issue**。您的每一个反馈都是项目进步的动力。
+
 ## License
 
-ISC © [Kitcaf](https://github.com/kitcaf)
+MIT © [Kitcaf](https://github.com/kitcaf)
