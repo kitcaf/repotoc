@@ -14,10 +14,10 @@ import { vitepressAdapter } from './vitepressAdapter.js';
  */
 export function createDefaultRegistry(): AdapterRegistry {
     const registry = new AdapterRegistry();
-    
+
     // Register built-in adapters (Requirements 3.7)
     registry.register(vitepressAdapter);
-    
+
     return registry;
 }
 

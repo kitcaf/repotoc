@@ -60,6 +60,15 @@ export interface Adapter {
      * @returns Import hint string or undefined if not applicable
      */
     getImportHint?(): string;
+
+    /**
+     * Resolve the actual output path based on project structure
+     * This allows adapters to dynamically determine the output location
+     * (e.g., VitePress may output to docs/.vitepress/sidebar.ts instead of .vitepress/sidebar.ts)
+     * @param rootPath - Project root directory path
+     * @returns Resolved output path relative to rootPath, or undefined to use defaultOutputPath
+     */
+    resolveOutputPath?(rootPath: string): string | undefined;
 }
 
 /**

@@ -148,8 +148,15 @@ export class MultiAdapterRunner {
         try {
             const adapter = this.registry.get(name);
 
-            // Determine output path
-            const outputPath = config?.outputPath || adapter.defaultOutputPath;
+            // Determine output path (priority: user config > resolveOutputPath > defaultOutputPath)
+            let outputPath = config?.outputPath;
+            if (!outputPath && adapter.resolveOutputPath) {
+                outputPath = adapter.resolveOutputPath(rootPath);
+            }
+            if (!outputPath) {
+                outputPath = adapter.defaultOutputPath;
+            }
+            
             const absoluteOutputPath = join(rootPath, outputPath);
 
             // Check if this is first run (output file doesn't exist)

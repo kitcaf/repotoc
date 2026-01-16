@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Adapter, OutputFormat } from './types.js';
+import type { Adapter, AdapterOptions, OutputFormat } from './types.js';
 import type { DocNode } from '../type/docNode.js';
 import { getEffectiveDisplayName, isIgnored } from '../metaSort.js';
 
@@ -22,7 +22,7 @@ interface VitePressSidebarItem {
  * VitePress's sidebar format with text, link, items, and collapsed properties.
  * 
  * @description
- * - detect() checks for .vitepress directory or vitepress dependency in package.json
+ * - detect() checks for .vitepress directory in common locations or vitepress dependency in package.json
  * - generate() converts DocNode tree to VitePress sidebar format
  * - Links have .md extension removed per VitePress conventions
  */
@@ -33,13 +33,25 @@ export class VitePressAdapter implements Adapter {
 
     /**
      * Detect if VitePress is present in the project
+     * 
+     * Checks in order:
+     * 1. .vitepress directory in project root
+     * 2. docs/.vitepress directory (common VitePress structure)
+     * 3. vitepress dependency in package.json
+     * 
      * @param rootPath - Project root directory path
-     * @returns true if .vitepress directory exists or vitepress is in package.json dependencies
+     * @returns true if VitePress characteristics are detected
      */
     async detect(rootPath: string): Promise<boolean> {
-        // Check for .vitepress directory
-        const vitepressDir = join(rootPath, '.vitepress');
-        if (existsSync(vitepressDir)) {
+        // Check for .vitepress directory in root
+        const vitepressDirRoot = join(rootPath, '.vitepress');
+        if (existsSync(vitepressDirRoot)) {
+            return true;
+        }
+
+        // Check for docs/.vitepress directory (common VitePress structure)
+        const vitepressDirDocs = join(rootPath, 'docs', '.vitepress');
+        if (existsSync(vitepressDirDocs)) {
             return true;
         }
 
@@ -66,10 +78,11 @@ export class VitePressAdapter implements Adapter {
     /**
      * Generate VitePress sidebar configuration from DocNode tree
      * @param nodes - Array of DocNode representing the document tree
-     * @param _options - Generation options (unused for VitePress)
+     * @param _options - Generation options
      * @returns TypeScript file content with sidebar configuration
      */
-    generate(nodes: DocNode[], _options?: unknown): string {
+    generate(nodes: DocNode[], _options?: AdapterOptions): string {
+        void _options; // Reserved for future use
         const sidebarItems = this.convertToSidebarItems(nodes);
         const sidebarJson = JSON.stringify(sidebarItems, null, 2);
 
@@ -102,6 +115,29 @@ export default {
     sidebar
   }
 }`;
+    }
+
+    /**
+     * Resolve the actual output path based on project structure
+     * VitePress .vitepress directory can be in root or docs/ folder
+     * @param rootPath - Project root directory path
+     * @returns Resolved output path relative to rootPath
+     */
+    resolveOutputPath(rootPath: string): string | undefined {
+        // Check if .vitepress is in docs/ folder (common structure)
+        const vitepressDirDocs = join(rootPath, 'docs', '.vitepress');
+        if (existsSync(vitepressDirDocs)) {
+            return 'docs/.vitepress/sidebar.ts';
+        }
+
+        // Check if .vitepress is in root
+        const vitepressDirRoot = join(rootPath, '.vitepress');
+        if (existsSync(vitepressDirRoot)) {
+            return '.vitepress/sidebar.ts';
+        }
+
+        // Default fallback
+        return undefined;
     }
 
     /**
