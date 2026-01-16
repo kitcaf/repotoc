@@ -28,6 +28,7 @@ export async function runCli(
 
     let tree = buildTreeFromPaths(paths, pathPrefix);
 
+    
     tree = await enrichTree(tree, scanPath);
 
     if (mappingRules != null) {

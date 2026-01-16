@@ -44,10 +44,8 @@ export function isIgnored(node: DocNode): boolean {
 /**
  * Clean up filename for display
  * - Remove .md extension
- * - Remove numeric prefix (e.g., "01_", "1-")
  */
 function cleanupName(filename: string): string {
     return filename
-        .replace(/\.md$/, '')      // Remove .md extension
-        .replace(/^\d+[-_]/, '');  // Remove numeric prefix like "01_" or "1-"
+        .replace(/\.md$/, '');     // Remove .md extension
 }
