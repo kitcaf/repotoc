@@ -41,7 +41,8 @@
 * **无损注入**：只需要要使用 `<!--toc-->` 标记，自动更新相应的目录区域
   * 仅需维护单一标记 `<!--toc-->`
   * 无论是原位更新、位置迁移还是废弃标记清理，都能**构建出精确的“删除-插入”操作链**，实现对文档内容的零侵入修改
-* **零配置起步**：默认配置即可满足 90% 的需求，也支持 `toc.config.ts` 自定义。
+* **通用静态网站目录生成**：目前支持对vitepress的目录生成
+* **零配置起步**：支持 `toc.config.ts` 自定义。
 
 ## 安装 (Installation)
 
@@ -109,6 +110,7 @@ ignore: false
 ---
 
 # 正文内容...
+```
 
 ### `toc.config.ts`基础配置
 
@@ -218,7 +220,6 @@ export default defineConfig({
 未来计划包括：
 
 * [ ] **自定义模板 (Custom Templates)**
-* [ ] **多文档库支持 (Multi-Repo / Monorepo Support)**
 * [ ] **GitHub Actions 集成 (CI/CD)**
 * [ ] **自动监听 (Watch Mode)**
 
