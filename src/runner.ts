@@ -6,18 +6,25 @@ import { updateReadme, InjectorOptions, InjectionResult } from './injector/index
 import { TocConfig } from './type/index.js';
 import { calculatePathPrefix } from './utils.js';
 import { applyMapping } from './mapping/applier.js';
+import {
+    defaultRegistry,
+    MultiAdapterRunner,
+    type MultiAdapterResult
+} from './adapters/index.js';
 
 export interface RunCliResult {
     success: boolean;
     readmePath: string;
     injectionResult: InjectionResult;
+    /** Adapter execution results (if any adapters were enabled) */
+    adapterResults?: MultiAdapterResult;
 }
 
 export async function runCli(
     options: TocConfig,
     injectorOptions: InjectorOptions = {}
 ): Promise<RunCliResult> {
-    const { scanPath, readmePath, ignore, mappingRules } = options;
+    const { scanPath, readmePath, ignore, mappingRules, cwd, adaptersConfig } = options;
 
     const paths = await scanDocs({ cwd: scanPath, ignore });
     if (!paths.length) {
@@ -27,6 +34,7 @@ export async function runCli(
     const pathPrefix = calculatePathPrefix(readmePath, scanPath);
 
     let tree = buildTreeFromPaths(paths, pathPrefix);
+
 
     tree = await enrichTree(tree, scanPath);
 
@@ -40,9 +48,30 @@ export async function runCli(
 
     const injectionResult = await updateReadme(readmePath, markdown, injectorOptions);
 
-    return {
+    const result: RunCliResult = {
         success: injectionResult.success,
         readmePath,
         injectionResult
     };
+
+    // Execute adapters using MultiAdapterRunner
+    const runner = new MultiAdapterRunner(defaultRegistry);
+    const adapterResults = await runner.run(tree, {
+        rootPath: cwd,
+        adaptersConfig
+    });
+
+    if (adapterResults.results.length > 0) {
+        result.adapterResults = adapterResults;
+
+        // Show import hints for first-run adapters
+        for (const adapterResult of adapterResults.results) {
+            if (adapterResult.isFirstRun && adapterResult.importHint) {
+                console.log(`\n ${adapterResult.adapter} generated for the first time!`);
+                console.log(adapterResult.importHint);
+            }
+        }
+    }
+
+    return result;
 }

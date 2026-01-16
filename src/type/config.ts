@@ -1,4 +1,5 @@
 import { MappingRules } from "src/mapping/types.js";
+import type { AdaptersConfig } from "../adapters/types.js";
 
 /**
  * Nested mapping configuration
@@ -59,6 +60,25 @@ export interface UserConfig {
      * Custom mapping rules (rename, sort, hide)
      */
     mapping?: MappingConfig;
+
+    /**
+     * Adapters configuration
+     * Key is adapter name, value is adapter-specific configuration
+     * 
+     * @example
+     * ```ts
+     * adapters: {
+     *   vitepress: {
+     *     enabled: true,
+     *     outputPath: '.vitepress/sidebar.ts'
+     *   },
+     *   docusaurus: {
+     *     enabled: false
+     *   }
+     * }
+     * ```
+     */
+    adapters?: AdaptersConfig;
 }
 
 /**
@@ -93,4 +113,10 @@ export interface TocConfig {
     * after the files have been scanned.
     */
     mappingRules?: MappingRules;
+
+    /**
+     * Adapters configuration for multi-format output
+     * Passed to MultiAdapterRunner to determine which adapters to enable
+     */
+    adaptersConfig?: AdaptersConfig;
 }
