@@ -67,7 +67,7 @@ describe('Parser', () => {
         }];
 
         const res = await enrichTree(nodes);
-        expect(getEffectiveDisplayName(res[0])).toBe('just_file');
+        expect(getEffectiveDisplayName(res[0])).toBe('01_just_file');
         expect(res[0].meta?.order).toBe(1);
     });
 });
