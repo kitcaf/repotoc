@@ -1,7 +1,7 @@
 import type { Adapter } from './types.js';
 
 /**
- * Error class for adapter registry operations
+ * Error thrown by AdapterRegistry operations
  */
 export class AdapterRegistryError extends Error {
     constructor(message: string) {
@@ -13,50 +13,17 @@ export class AdapterRegistryError extends Error {
 /**
  * Required properties for a valid adapter
  */
-const REQUIRED_PROPERTIES = ['name', 'outputFormat', 'defaultOutputPath'] as const;
-const REQUIRED_METHODS = ['detect', 'generate'] as const;
+const REQUIRED_ADAPTER_PROPERTIES = ['name', 'outputFormat', 'defaultOutputPath'] as const;
+const REQUIRED_ADAPTER_METHODS = ['detect', 'generate'] as const;
 
 /**
- * AdapterRegistry - Central component for managing all available adapters
+ * AdapterRegistry - Central registry for managing document framework adapters
  * 
- * @description
  * Provides registration, retrieval, listing, and detection capabilities
- * for document framework adapters.
+ * for adapters that transform DocNode trees into framework-specific formats.
  */
 export class AdapterRegistry {
     private adapters: Map<string, Adapter> = new Map();
-
-    /**
-     * Validate that an adapter implements all required interface members
-     * @param adapter - The adapter to validate
-     * @throws AdapterRegistryError if adapter is invalid
-     */
-    private validateAdapter(adapter: unknown): asserts adapter is Adapter {
-        if (!adapter || typeof adapter !== 'object') {
-            throw new AdapterRegistryError('Invalid adapter: adapter must be an object');
-        }
-
-        const adapterObj = adapter as Record<string, unknown>;
-
-        // Check required properties
-        for (const prop of REQUIRED_PROPERTIES) {
-            if (!(prop in adapterObj) || adapterObj[prop] === undefined || adapterObj[prop] === null) {
-                throw new AdapterRegistryError(`Invalid adapter: missing required property "${prop}"`);
-            }
-        }
-
-        // Check required methods
-        for (const method of REQUIRED_METHODS) {
-            if (!(method in adapterObj) || typeof adapterObj[method] !== 'function') {
-                throw new AdapterRegistryError(`Invalid adapter: missing required property "${method}"`);
-            }
-        }
-
-        // Validate name is a non-empty string
-        if (typeof adapterObj.name !== 'string' || adapterObj.name.trim() === '') {
-            throw new AdapterRegistryError('Invalid adapter: name must be a non-empty string');
-        }
-    }
 
     /**
      * Register a new adapter
@@ -101,25 +68,47 @@ export class AdapterRegistry {
      * @returns Array of adapter names that detected their framework
      */
     async detectAll(rootPath: string): Promise<string[]> {
-        const detected: string[] = [];
+        const detectedAdapters: string[] = [];
 
         for (const [name, adapter] of this.adapters) {
             try {
-                const isDetected = await adapter.detect(rootPath);
-                if (isDetected) {
-                    detected.push(name);
+                const detected = await adapter.detect(rootPath);
+                if (detected) {
+                    detectedAdapters.push(name);
                 }
-            } catch {
-                // If detection fails, treat as not detected (log warning in production)
-                // Continue with other adapters
+            } catch (error) {
+                // Log warning but treat as not detected
+                console.warn(`Adapter "${name}" detection failed:`, error);
             }
         }
 
-        return detected;
+        return detectedAdapters;
+    }
+
+    /**
+     * Validate that an adapter implements all required interface members
+     * @param adapter - The adapter to validate
+     * @throws AdapterRegistryError if adapter is invalid
+     */
+    private validateAdapter(adapter: unknown): asserts adapter is Adapter {
+        if (!adapter || typeof adapter !== 'object') {
+            throw new AdapterRegistryError('Invalid adapter: adapter must be an object');
+        }
+
+        const adapterObj = adapter as Record<string, unknown>;
+
+        // Check required properties
+        for (const prop of REQUIRED_ADAPTER_PROPERTIES) {
+            if (!(prop in adapterObj) || adapterObj[prop] === undefined) {
+                throw new AdapterRegistryError(`Invalid adapter: missing required property "${prop}"`);
+            }
+        }
+
+        // Check required methods
+        for (const method of REQUIRED_ADAPTER_METHODS) {
+            if (!(method in adapterObj) || typeof adapterObj[method] !== 'function') {
+                throw new AdapterRegistryError(`Invalid adapter: missing required property "${method}"`);
+            }
+        }
     }
 }
-
-/**
- * Default global adapter registry instance
- */
-export const defaultRegistry = new AdapterRegistry();
