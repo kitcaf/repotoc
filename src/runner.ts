@@ -6,15 +6,18 @@ import { updateReadme, InjectorOptions, InjectionResult } from './injector/index
 import { TocConfig } from './type/index.js';
 import { calculatePathPrefix } from './utils.js';
 import { applyMapping } from './mapping/applier.js';
-import { join } from 'node:path';
-import { vitepressAdapter, writeAdapterOutput, type AdapterResult } from './adapters/index.js';
+import {
+    defaultRegistry,
+    MultiAdapterRunner,
+    type MultiAdapterResult
+} from './adapters/index.js';
 
 export interface RunCliResult {
     success: boolean;
     readmePath: string;
     injectionResult: InjectionResult;
-    /** VitePress adapter result (if enabled) */
-    vitepressResult?: AdapterResult;
+    /** Adapter execution results (if any adapters were enabled) */
+    adapterResults?: MultiAdapterResult;
 }
 
 export async function runCli(
@@ -32,7 +35,7 @@ export async function runCli(
 
     let tree = buildTreeFromPaths(paths, pathPrefix);
 
-    
+
     tree = await enrichTree(tree, scanPath);
 
     if (mappingRules != null) {
@@ -51,94 +54,24 @@ export async function runCli(
         injectionResult
     };
 
-    // Execute VitePress adapter if enabled
-    const vitepressConfig = adaptersConfig?.vitepress;
-    const vitepressEnabled = vitepressConfig?.enabled;
-    
-    // Determine if VitePress adapter should run:
-    // - If explicitly enabled: true -> run
-    // - If explicitly disabled: false -> skip
-    // - If not configured: use auto-detection
-    let shouldRunVitepress = false;
-    
-    if (vitepressEnabled === true) {
-        shouldRunVitepress = true;
-    } else if (vitepressEnabled === false) {
-        shouldRunVitepress = false;
-    } else {
-        // Auto-detect
-        shouldRunVitepress = await vitepressAdapter.detect(cwd);
-    }
+    // Execute adapters using MultiAdapterRunner
+    const runner = new MultiAdapterRunner(defaultRegistry);
+    const adapterResults = await runner.run(tree, {
+        rootPath: cwd,
+        adaptersConfig
+    });
 
-    if (shouldRunVitepress) {
-        const vitepressResult = await executeVitepressAdapter(tree, cwd, vitepressConfig);
-        result.vitepressResult = vitepressResult;
-        
-        // Show import hint on first run
-        if (vitepressResult.isFirstRun && vitepressResult.importHint) {
-            console.log('\n📝 VitePress sidebar generated for the first time!');
-            console.log(vitepressResult.importHint);
+    if (adapterResults.results.length > 0) {
+        result.adapterResults = adapterResults;
+
+        // Show import hints for first-run adapters
+        for (const adapterResult of adapterResults.results) {
+            if (adapterResult.isFirstRun && adapterResult.importHint) {
+                console.log(`\n ${adapterResult.adapter} generated for the first time!`);
+                console.log(adapterResult.importHint);
+            }
         }
     }
 
     return result;
-}
-
-/**
- * Execute VitePress adapter and write output
- */
-async function executeVitepressAdapter(
-    tree: import('./type/docNode.js').DocNode[],
-    rootPath: string,
-    config?: { enabled?: boolean; outputPath?: string; [key: string]: unknown }
-): Promise<AdapterResult> {
-    try {
-        const outputPath = config?.outputPath || vitepressAdapter.defaultOutputPath;
-        const absoluteOutputPath = join(rootPath, outputPath);
-        
-        // Check if this is first run
-        const { existsSync } = await import('node:fs');
-        const isFirstRun = !existsSync(absoluteOutputPath);
-        
-        // Generate content
-        const content = vitepressAdapter.generate(tree);
-        
-        // Write to file
-        const writeResult = await writeAdapterOutput({
-            outputPath: absoluteOutputPath,
-            content,
-            outputFormat: vitepressAdapter.outputFormat
-        });
-        
-        if (!writeResult.success) {
-            return {
-                adapter: vitepressAdapter.name,
-                success: false,
-                outputPath,
-                message: writeResult.message
-            };
-        }
-        
-        const result: AdapterResult = {
-            adapter: vitepressAdapter.name,
-            success: true,
-            outputPath,
-            message: `Generated ${outputPath}`,
-            isFirstRun
-        };
-        
-        if (isFirstRun) {
-            result.importHint = vitepressAdapter.getImportHint();
-        }
-        
-        return result;
-    } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        return {
-            adapter: vitepressAdapter.name,
-            success: false,
-            outputPath: config?.outputPath || vitepressAdapter.defaultOutputPath,
-            message: `Failed to execute VitePress adapter: ${errorMessage}`
-        };
-    }
 }

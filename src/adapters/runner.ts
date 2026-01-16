@@ -8,6 +8,7 @@ import type {
 } from './types.js';
 import type { AdapterRegistry } from './registry.js';
 import type { DocNode } from '../type/docNode.js';
+import { writeAdapterOutput } from './writer.js';
 
 /**
  * Options for MultiAdapterRunner
@@ -164,6 +165,22 @@ export class MultiAdapterRunner {
             // Generate content
             const content = adapter.generate(nodes, adapterOptions);
 
+            // Write to file
+            const writeResult = await writeAdapterOutput({
+                outputPath: absoluteOutputPath,
+                content,
+                outputFormat: adapter.outputFormat
+            });
+
+            if (!writeResult.success) {
+                return {
+                    adapter: name,
+                    success: false,
+                    outputPath,
+                    message: writeResult.message
+                };
+            }
+
             // Build result
             const result: AdapterResult = {
                 adapter: name,
@@ -177,10 +194,6 @@ export class MultiAdapterRunner {
             if (isFirstRun && adapter.getImportHint) {
                 result.importHint = adapter.getImportHint();
             }
-
-            // Note: Actual file writing is handled by a separate writer module
-            // This runner only generates content and returns results
-            // The content can be accessed via a separate method if needed
 
             return result;
         } catch (error) {

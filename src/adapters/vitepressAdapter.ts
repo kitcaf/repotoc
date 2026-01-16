@@ -66,10 +66,10 @@ export class VitePressAdapter implements Adapter {
     /**
      * Generate VitePress sidebar configuration from DocNode tree
      * @param nodes - Array of DocNode representing the document tree
-     * @param options - Generation options
+     * @param _options - Generation options (unused for VitePress)
      * @returns TypeScript file content with sidebar configuration
      */
-    generate(nodes: DocNode[]): string {
+    generate(nodes: DocNode[], _options?: unknown): string {
         const sidebarItems = this.convertToSidebarItems(nodes);
         const sidebarJson = JSON.stringify(sidebarItems, null, 2);
 
