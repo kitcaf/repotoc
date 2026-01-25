@@ -47,11 +47,11 @@
 ## 安装 (Installation)
 
 ```bash
-# 安装
-npm install @kitcaf/tocgen
+# 安装 (推荐全局安装)
+npm install -g @kitcaf/tocgen
 
 # 或者使用 pnpm
-pnpm add @kitcaf/tocgen
+pnpm add -g @kitcaf/tocgen
 
 ```
 
